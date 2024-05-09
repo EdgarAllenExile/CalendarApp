@@ -1,0 +1,124 @@
+-- CREATE DATABASE CalAppUsers;
+-- DROP DATABASE CalAppUsers;
+
+-- then open new query in CalAppUsers
+
+CREATE TABLE dbo.AspNetRoles
+(
+	[Id] nvarchar(450) not null,
+	[Name] nvarchar(256),
+	[NormalizedName] nvarchar(256),
+	[ConcurrencyStamp] nvarchar(max),
+
+	CONSTRAINT PK_AspNetRoles PRIMARY KEY (Id)
+)
+
+CREATE TABLE dbo.AspNetUsers
+(
+	[Id] nvarchar(450) not null,
+	[UserName] nvarchar(256),
+	[NormalizedUserName] nvarchar(256),
+	[Email] nvarchar(256),
+	[NormalizedEmail] nvarchar(256),
+	[EmailConfirmed] bit not null,
+	[PasswordHash] nvarchar(max),
+	[SecurityStamp] nvarchar(max),
+	[ConcurrencyStamp] nvarchar(max),
+	[PhoneNumber] nvarchar(max),
+	[PhoneNumberConfirmed] bit not null,
+	[TwoFactorEnabled] bit not null,
+	[LockoutEnd] datetimeoffset,
+	[LockoutEnabled] bit not null,
+	[AccessFailedCount] int not null,
+
+	CONSTRAINT PK_AspNetUsers PRIMARY KEY (Id)
+)
+
+CREATE TABLE dbo.AspNetRoleClaims
+(
+	[Id] int not null IDENTITY(1, 1),
+	[RoleID] nvarchar(450) not null,
+	[ClaimType] nvarchar(max),
+	[ClaimValue] nvarchar(max),
+
+	CONSTRAINT PK_AspNetRoleClaims PRIMARY KEY (Id),
+	CONSTRAINT FK_AspNetRoleClaims_AspNetRoles_RoleId FOREIGN KEY (RoleId)
+		REFERENCES AspNetRoles(Id)
+
+)
+
+CREATE TABLE dbo.AspNetUserClaims
+(
+	[Id] int not null IDENTITY(1, 1),
+	[UserID] nvarchar(450) not null,
+	[ClaimType] nvarchar(max),
+	[ClaimValue] nvarchar(max),
+
+	CONSTRAINT PK_AspNetUserClaims PRIMARY KEY (Id),
+	CONSTRAINT FK_AspNetUserClaims_AspNetUsers_UserId FOREIGN KEY (UserId)
+		REFERENCES AspNetUsers(Id)
+
+)
+
+CREATE TABLE dbo.AspNetUserLogins
+(
+	[LoginProvider] nvarchar(450) not null,
+	[ProviderKey] nvarchar(450) not null,
+	[ProviderDisplayName] nvarchar(max),
+	[UserId] nvarchar(450) not null,
+
+	CONSTRAINT PK_AspNetUserLogins PRIMARY KEY (LoginProvider, ProviderKey),
+	CONSTRAINT FK_AspNetUserLogins_AspNetUsers_UserId FOREIGN KEY (UserId)
+		REFERENCES AspNetUsers(Id)
+
+)
+
+CREATE TABLE dbo.AspNetUserRoles
+(
+	[UserId] nvarchar(450) not null,
+	[RoleId] nvarchar(450) not null,
+
+	CONSTRAINT PK_AspNetUserRoles PRIMARY KEY (UserID, RoleID),
+	CONSTRAINT FK_AspNetUserRoles_AspNetRoles_RoleId FOREIGN KEY (RoleId)
+		REFERENCES AspNetRoles(Id),
+	CONSTRAINT FK_AspNetUserRoles_AspNetUsers_UserId FOREIGN KEY (UserId)
+		REFERENCES AspNetUsers(Id)
+
+)
+
+CREATE TABLE dbo.AspNetUserTokens
+(
+	[UserID] nvarchar(450) not null,
+	[LoginProvider] nvarchar(450) not null,
+	[Name] nvarchar(450) not null,
+	[Value] nvarchar(max),
+
+	CONSTRAINT PK_AspNetUserTokens PRIMARY KEY (UserId, LoginProvider, [Name]),
+	CONSTRAINT FK_AspNetUserTokens_AspNetUsers_UserId FOREIGN KEY (UserId)
+		REFERENCES AspNetUsers(Id)
+
+)
+
+CREATE INDEX IX_AspNetRoleClaims_RoleId
+ON AspNetRoleClaims (RoleID);
+
+CREATE UNIQUE INDEX RoleNameIndex
+ON AspNetRoles (NormalizedName)
+WHERE [NormalizedName] is not null;
+
+CREATE INDEX IX_AspNetUserClaims_UserId
+ON AspNetUserClaims (UserId);
+
+CREATE INDEX IX_AspNetUserLogins_UserId
+ON AspNetUserLogins (UserID);
+
+CREATE INDEX IX_AspNetUserRoles_RoleId
+ON AspNetUserRoles (RoleID);
+
+CREATE INDEX EmailIndex
+ON AspNetUsers (NormalizedEmail);
+
+CREATE UNIQUE INDEX UserNameIndex
+ON AspNetUsers (NormalizedUserName)
+WHERE [NormalizedUserName] is not null;
+
