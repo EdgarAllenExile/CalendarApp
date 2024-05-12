@@ -1,20 +1,67 @@
-﻿<div>
+﻿@inject IJSRuntime JS
+
+<div>
     <div class="container inner-container">
-        <div class="row row-cols-6">
-        @for (var i = 1; i <= 42; i++)
+        <div id="DayHeader" class="row justify-content-around">
+            <div id="Monday" class="col">Monday</div>
+            <div id="Tuesday" class="col">Tuesday</div>
+            <div id="Wednesday" class="col">Wednesday</div>
+            <div id="Thursday" class="col">Thursday</div>
+            <div id="Friday" class="col">Friday</div>
+            <div id="Saturday" class="col">Saturday</div>
+            <div id="Sunday" class="col">Sunday</div>
+        </div>
+
+        @for (var i = 0; i <= 5; i++)
         {
-            <div id="MonthDay@1" class="col month-day">
-            <span>@i</span>
+            <div class="row justify-content-around">
+                @for (var j = 1; j <= 7; j++)
+                {
+                    <div class="col">
+                        <div class="p-1 month-day rounded">
+                            @((i*7)+j)
+                            @daysInMonth(j)
+                            @(1 - firstDay().DayOfWeek)
+                            <br />
+                            <br />
+                        </div>
+                    </div>
+                }
             </div>
         }
     </div>
-
-    </div>
 </div>
 
-
-
-
 @code {
-    
+    [Parameter]
+    public DateOnly SelectedMonth { get; set; }
+
+    public int lessDay()
+    {
+        var day = 1 - firstDay().DayOfWeek;
+        var dayInt = Convert.ToInt32(day);
+        return dayInt;
+    }
+
+    public DateOnly firstDay()
+    {
+        var firstDate = SelectedMonth.AddDays( - (SelectedMonth.Day - 1));
+        return firstDate;
+    }
+
+    public DateOnly daysInMonth(int b)
+    {
+        // var dayCount = DateTime.DaysInMonth(SelectedMonth.Year, SelectedMonth.Month);
+
+        var FirstMonday = firstDay().AddDays(lessDay()-1);
+
+        DateOnly[] dayArray = new DateOnly[42];
+
+        for (int a = 1; a < dayArray.Length; a++)
+        {
+            dayArray[a] = FirstMonday.AddDays(a);
+        }
+        return dayArray[b];
+    } 
+
 }

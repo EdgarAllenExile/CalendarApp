@@ -1,7 +1,3 @@
-﻿const todayDateTime = new Date();
-
-//function rowNumbclass(id) {
-//    if (id <= 7) {
-//        return 
-//    }
-//} 
+﻿function daysInMonth(month, year) {
+    return new Date(year, month, 0).getDate();
+}

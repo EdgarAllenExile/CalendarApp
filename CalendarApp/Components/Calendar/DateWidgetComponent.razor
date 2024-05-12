@@ -1,0 +1,13 @@
+﻿<div>
+    <h3>Date</h3>
+    <span>@SelectedDateOnlyWidget.Month</span>
+    <input type="date" value="@SelectedDateTimeWidget" />
+
+    <MonthView SelectedMonth=@SelectedDateOnlyWidget />
+
+</div>
+
+@code {
+    public DateTime SelectedDateTimeWidget { get; set; } = DateTime.Now;
+    public DateOnly SelectedDateOnlyWidget { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+}
